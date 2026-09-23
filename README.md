@@ -389,7 +389,7 @@ Completion rows found: 1
 Concurrency test passed.
 ```
 
-API testing screenshots are available in:
+# API testing screenshots are available in:
 
 ```text
 frontend/public/
