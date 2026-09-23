@@ -1,6 +1,10 @@
 import "./CourseSelector.css";
 
-function CourseSelector({ courseId, onCourseChange }) {
+function CourseSelector({
+  courseId,
+  enrolledCourseIds,
+  onCourseChange,
+}) {
   const courseIds = [1, 2, 3, 4];
 
   return (
@@ -8,15 +12,23 @@ function CourseSelector({ courseId, onCourseChange }) {
       <p className="section-label">COURSES</p>
 
       <div className="course-buttons">
-        {courseIds.map((id) => (
-          <button
-            key={id}
-            className={id === courseId ? "active" : ""}
-            onClick={() => onCourseChange(id)}
-          >
-            Course {id}
-          </button>
-        ))}
+        {courseIds.map((id) => {
+          const isEnrolled = enrolledCourseIds.includes(id);
+          const isSelected = id === courseId;
+
+          return (
+            <button
+              key={id}
+              className={`
+                ${isEnrolled ? "enrolled" : "not-enrolled"}
+                ${isSelected ? "selected" : ""}
+              `}
+              onClick={() => onCourseChange(id)}
+            >
+              Course {id}
+            </button>
+          );
+        })}
       </div>
     </section>
   );

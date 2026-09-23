@@ -74,6 +74,27 @@
   font-weight: 600;
 }
 
+.course-content {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.course-content.loading {
+  opacity: 0.45;
+  transform: translateY(4px);
+  pointer-events: none;
+}
+
+.not-enrolled-message {
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  background: rgba(255, 70, 70, 0.08);
+  color: #ff8f8f;
+  border: 1px solid #7a3030;
+  border-radius: 8px;
+}
+
 @media (max-width: 600px) {
   .app-container {
     width: min(calc(100% - 24px), 920px);
