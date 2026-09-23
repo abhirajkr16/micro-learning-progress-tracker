@@ -6,7 +6,3 @@ A full-stack Micro-Learning Progress Tracker built for the Root2Rise Full Stack 
 
 - `frontend/` — React frontend application
 - `backend/` — Node.js/Express backend application
-
-## Status
-
-Project initialization in progress.

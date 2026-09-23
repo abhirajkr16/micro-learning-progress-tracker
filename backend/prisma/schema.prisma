@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Learner {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  enrollments CourseEnrollment[]
+  progress    LessonProgress[]
+
+  @@map("learners")
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+
+  lessons     Lesson[]
+  enrollments CourseEnrollment[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id           Int      @id @default(autoincrement())
+  courseId     Int      @map("course_id")
+  title        String
+  contentOrUrl String   @map("content_or_url")
+  orderIndex   Int      @map("order_index")
+
+  course   Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress LessonProgress[]
+
+  @@unique([courseId, orderIndex])
+  @@map("lessons")
+}
+
+model CourseEnrollment {
+  id         Int      @id @default(autoincrement())
+  learnerId  Int      @map("learner_id")
+  courseId   Int      @map("course_id")
+  enrolledAt DateTime @default(now()) @map("enrolled_at")
+
+  learner Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, courseId])
+  @@map("course_enrollments")
+}
+
+model LessonProgress {
+  id          Int      @id @default(autoincrement())
+  learnerId   Int      @map("learner_id")
+  lessonId    Int      @map("lesson_id")
+  completedAt DateTime @default(now()) @map("completed_at")
+
+  learner Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, lessonId])
+  @@map("lesson_progress")
+}
