@@ -27,7 +27,7 @@ function App() {
       setError("");
 
       const [courseResponse, progressResponse] = await Promise.all([
-        getCourse(courseId),
+        getCourse(courseId,learnerId),
         getLearnerProgress(learnerId),
       ]);
 

@@ -18,8 +18,8 @@ async function request(url, options = {}) {
   return data;
 }
 
-export function getCourse(courseId) {
-  return request(`/courses/${courseId}`);
+export function getCourse(courseId, learnerId) {
+  return request(`/courses/${courseId}?learnerId=${learnerId}`);
 }
 
 export function getLearnerProgress(learnerId) {
