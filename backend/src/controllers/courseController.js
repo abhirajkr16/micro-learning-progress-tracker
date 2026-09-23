@@ -3,8 +3,9 @@ const courseService = require("../services/courseService");
 async function getCourseById(req, res, next) {
   try {
     const courseId = Number(req.params.id);
+    const learnerId = Number(req.query.learnerId);
 
-    const course = await courseService.getCourseById(courseId);
+    const course = await courseService.getCourseById(courseId, learnerId);
 
     res.status(200).json({
       success: true,

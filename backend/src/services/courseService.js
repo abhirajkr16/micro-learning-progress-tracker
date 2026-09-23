@@ -1,7 +1,8 @@
 const prisma = require("../config/database");
+
 const AppError = require("../utils/AppError");
 
-async function getCourseById(courseId) {
+async function getCourseById(courseId, learnerId) {
   const course = await prisma.course.findUnique({
     where: {
       id: courseId,
@@ -19,7 +20,33 @@ async function getCourseById(courseId) {
     throw new AppError("Course not found", 404);
   }
 
-  return course;
+  let completedLessonIds = new Set();
+
+  if (learnerId) {
+    const progress = await prisma.lessonProgress.findMany({
+      where: {
+        learnerId,
+        lesson: {
+          courseId,
+        },
+      },
+      select: {
+        lessonId: true,
+      },
+    });
+
+    completedLessonIds = new Set(progress.map((item) => item.lessonId));
+  }
+
+  const lessons = course.lessons.map((lesson) => ({
+    ...lesson,
+    completed: completedLessonIds.has(lesson.id),
+  }));
+
+  return {
+    ...course,
+    lessons,
+  };
 }
 
 module.exports = {
