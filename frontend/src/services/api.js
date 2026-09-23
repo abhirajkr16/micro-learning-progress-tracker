@@ -2,10 +2,11 @@ const API_URL = "http://localhost:5000/api";
 
 async function request(url, options = {}) {
   const response = await fetch(`${API_URL}${url}`, {
+    ...options,
     headers: {
       "Content-Type": "application/json",
+      ...options.headers,
     },
-    ...options,
   });
 
   const data = await response.json();

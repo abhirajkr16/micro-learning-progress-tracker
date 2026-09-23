@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 const healthRoutes = require("./routes/healthRoutes");
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
@@ -8,6 +9,12 @@ const progressRoutes = require("./routes/progressRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 
 app.use(express.json());
 

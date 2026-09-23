@@ -1,0 +1,45 @@
+.course-selector {
+    margin-bottom: 32px;
+}
+
+.course-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.course-buttons button {
+    padding: 9px 15px;
+    border: 1px solid #3a3a3a;
+    border-radius: 7px;
+    background: #252525;
+    color: #a8a8a8;
+    cursor: pointer;
+    font-size: 13px;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.course-buttons button:hover {
+    border-color: #666666;
+    color: #ffffff;
+}
+
+.course-buttons button.active {
+    border-color: #ffffff;
+    background: #ffffff;
+    color: #1c1c1c;
+}
+
+@media (max-width: 600px) {
+    .course-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .course-buttons button {
+        width: 100%;
+    }
+}

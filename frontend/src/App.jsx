@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
-import { getCourse, getLearnerProgress } from "./services/api";
+import {
+  completeLesson,
+  getCourse,
+  getLearnerProgress,
+} from "./services/api";
+
+import CourseSelector from "./components/CourseSelector";
 import ProgressCard from "./components/ProgressCard";
+import LessonList from "./components/LessonList";
+
 import "./App.css";
 
 const learnerId = 1;
-const courseId = 1;
 
 function App() {
+  const [courseId, setCourseId] = useState(1);
   const [course, setCourse] = useState(null);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [completingLesson, setCompletingLesson] = useState(null);
   const [error, setError] = useState("");
 
   async function loadData() {
@@ -33,7 +42,33 @@ function App() {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [courseId]);
+
+  async function handleComplete(lessonId) {
+    try {
+      setCompletingLesson(lessonId);
+      setError("");
+  
+      await completeLesson(lessonId, learnerId);
+  
+      setCourse((currentCourse) => ({
+        ...currentCourse,
+        lessons: currentCourse.lessons.map((lesson) =>
+          lesson.id === lessonId
+            ? { ...lesson, completed: true }
+            : lesson
+        ),
+      }));
+  
+      const progressResponse = await getLearnerProgress(learnerId);
+  
+      setProgress(progressResponse.data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setCompletingLesson(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -45,7 +80,7 @@ function App() {
     );
   }
 
-  if (error) {
+  if (error && !course) {
     return (
       <main className="app">
         <div className="status-card">
@@ -60,37 +95,34 @@ function App() {
   return (
     <main className="app">
       <div className="app-container">
+        <CourseSelector
+          courseId={courseId}
+          onCourseChange={setCourseId}
+        />
+
         <header className="app-header">
           <p className="eyebrow">MICRO-LEARNING</p>
+
           <h1>{course.title}</h1>
-          <p className="course-description">{course.description}</p>
+
+          <p className="course-description">
+            {course.description}
+          </p>
         </header>
 
         <ProgressCard progress={progress} />
 
-        <section className="lessons-section">
-          <div className="section-heading">
-            <p className="section-label">CURRICULUM</p>
-            <h2>Course Lessons</h2>
+        {error && (
+          <div className="error-message">
+            {error}
           </div>
+        )}
 
-          <div className="lesson-list">
-            {course.lessons.map((lesson, index) => (
-              <article className="lesson-card" key={lesson.id}>
-                <span className="lesson-number">{index + 1}</span>
-
-                <div className="lesson-info">
-                  <h3>{lesson.title}</h3>
-                  <p>{lesson.contentOrUrl}</p>
-                </div>
-
-                <span className="lesson-status">
-                  {lesson.completed ? "Completed" : "Pending"}
-                </span>
-              </article>
-            ))}
-          </div>
-        </section>
+        <LessonList
+          lessons={course.lessons}
+          onComplete={handleComplete}
+          completingLesson={completingLesson}
+        />
       </div>
     </main>
   );
