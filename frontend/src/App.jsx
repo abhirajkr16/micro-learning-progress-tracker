@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import {
   completeLesson,
   getCourse,
@@ -27,7 +28,7 @@ function App() {
       setError("");
 
       const [courseResponse, progressResponse] = await Promise.all([
-        getCourse(courseId,learnerId),
+        getCourse(courseId, learnerId),
         getLearnerProgress(learnerId),
       ]);
 
@@ -48,9 +49,9 @@ function App() {
     try {
       setCompletingLesson(lessonId);
       setError("");
-  
+
       await completeLesson(lessonId, learnerId);
-  
+
       setCourse((currentCourse) => ({
         ...currentCourse,
         lessons: currentCourse.lessons.map((lesson) =>
@@ -59,9 +60,8 @@ function App() {
             : lesson
         ),
       }));
-  
+
       const progressResponse = await getLearnerProgress(learnerId);
-  
       setProgress(progressResponse.data);
     } catch (error) {
       setError(error.message);
@@ -69,6 +69,10 @@ function App() {
       setCompletingLesson(null);
     }
   }
+
+  const selectedCourseProgress = progress?.courses?.find(
+    (course) => course.id === courseId
+  );
 
   if (loading) {
     return (
@@ -110,7 +114,9 @@ function App() {
           </p>
         </header>
 
-        <ProgressCard progress={progress} />
+        {selectedCourseProgress && (
+          <ProgressCard progress={selectedCourseProgress} />
+        )}
 
         {error && (
           <div className="error-message">
